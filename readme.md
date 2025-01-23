@@ -8,7 +8,7 @@ It assumes you have an opentelemetry collector running. It will pass traces, met
 Install with pip:
 
 ```python
-pip install git+
+pip install git+https://github.com/hadoken79/opentelemetry_helper.git
 ```
 Pass the endpoint of your otlp collector to the constructor. You can then get a tracer, meter or logger.
 
