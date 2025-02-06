@@ -3,3 +3,4 @@ ot.py.old
 ENV
 test.py
 __pycache__
+*.egg-info/
