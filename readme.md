@@ -33,7 +33,7 @@ logger = otel.get_logger(formatter)
 
 
 # Initialize tracing
-[trace, tracer] = otel.init_tracing()
+trace, tracer = otel.init_tracing()
 with tracer.start_as_current_span("test_span"):
     logger.info("Tracing this operation!")
 
