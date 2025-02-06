@@ -33,9 +33,13 @@ logger = otel.get_logger(formatter)
 
 
 # Initialize tracing
-tracer = otel.init_tracing()
+[trace, tracer] = otel.init_tracing()
 with tracer.start_as_current_span("test_span"):
     logger.info("Tracing this operation!")
+
+# you can add attributes to the trace
+current_span = trace.get_current_span()
+current_span.set_attribute("my.custom.attr", "something")
 
 ## or add tracing via decorator
 @tracer.start_as_current_span("Tracing this operation!")

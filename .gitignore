@@ -1,3 +1,5 @@
 .env
 .ot.py.old
 ENV
+test.py
+__pycache__

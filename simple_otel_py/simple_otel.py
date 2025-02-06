@@ -29,8 +29,8 @@ class OtelSetup:
 
         trace.set_tracer_provider(provider)
         tracer = trace.get_tracer(self.name)
-        return tracer
-
+        return [trace, tracer]
+    
     def init_metrics(self):
         from opentelemetry import metrics
         from opentelemetry.sdk.metrics import MeterProvider

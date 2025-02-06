@@ -1,3 +1,1 @@
-from .opentelemetry_helper import OpenTelemetryHelper
-
-__all__ = ["OpenTelemetryHelper"]
+from .simple_otel import OtelSetup
