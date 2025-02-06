@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "simple_otel_py"
+version = "0.0.3"
+authors = [
+    { name = "Linus Pauls", email = "hadoken79@protonmail.com" }
+]
+description = "A simple library for setting up OpenTelemetry logging, tracing, and metrics in Python applications. To send them to an open otel collector"
+readme = "README.md"
+requires-python = ">=3.6"
+license = { text = "MIT" }
+keywords = ["Metrics", "Logging", "Tracing", "CNF", "OpenTelemetry", "Python"]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "opentelemetry-api",
+    "opentelemetry-sdk",
+    "opentelemetry-instrumentation-logging",
+    "opentelemetry-instrumentation-requests",
+    "opentelemetry-exporter-richconsole",
+    "opentelemetry.exporter.otlp.proto.grpc"
+]
+
+[project.urls]
+Homepage = "https://github.com/hadoken79/py_send_m365"
+"Bug Tracker" = "https://github.com/hadoken79/py_send_m365/issues"
+
+[tool.setuptools.packages.find]
+include = ["simple_otel*"]

@@ -1,7 +1,8 @@
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+import logging
 
 
-class OpenTelemetryHelper:
+class OtelSetup:
     def __init__(self, name: str, otlp_collector_endpoint: str):
         if not otlp_collector_endpoint:
             raise ValueError("OTLP collector endpoint is required.")
@@ -46,8 +47,7 @@ class OpenTelemetryHelper:
 
         return meter_provider.get_meter(self.name)
 
-    def get_logger(self):
-        import logging
+    def get_logger(self, formatter: logging.Formatter = None):
         from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter
         from opentelemetry._logs import set_logger_provider
         from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
@@ -60,7 +60,10 @@ class OpenTelemetryHelper:
         # Console handler
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        
+        if formatter is None:
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            
         console_handler.setFormatter(formatter)
         logger.addHandler(console_handler)
 
