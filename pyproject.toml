@@ -30,8 +30,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/hadoken79/py_send_m365"
-"Bug Tracker" = "https://github.com/hadoken79/py_send_m365/issues"
+Homepage = "https://github.com/hadoken79/simple_otel_py"
+"Bug Tracker" = "https://github.com/hadoken79/simple_otel_py/issues"
 
 [tool.setuptools.packages.find]
 include = ["simple_otel*"]

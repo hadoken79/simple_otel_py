@@ -6,7 +6,7 @@ setup(
     description="A helper for OpenTelemetry integration with your existing collector",
     author="Linus Pauls",
     author_email="hadoken79@protonmail.com",
-    url="https://github.com/hadoken79/opentelemetry_helper",
+    url="https://github.com/hadoken79/simple_otel_py",
     packages=find_packages(), 
     python_requires=">=3.7",
     install_requires=[

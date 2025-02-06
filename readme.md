@@ -1,38 +1,69 @@
-# Opentelemetry integration with python 
+# simple_otel_py
 
-This module allows for a simple integration of python code with open telementry.
-It assumes you have an opentelemetry collector running. It will pass traces, metrics and logs to the console and the collector.
+*A simple library for setting up OpenTelemetry logging, tracing, and metrics in Python applications.*
+
+## Features
+- 🔹 Easy integration with OpenTelemetry  
+- 📊 Logs, traces, and metrics sent to an existing (open) OTLP collector  
+- 🖥️ Console logging for debugging  
+- 📡 Support for OpenTelemetry instrumentation  
+
+## Installation
+```bash
+pip install simple_otel_py
+```
 
 ## Usage
 
-Install with pip:
-
+### Initialize OpenTelemetry Components
 ```python
-pip install git+https://github.com/hadoken79/opentelemetry_helper.git
+from simple_otel_py import OtelSetup
+
+# Create an instance with service name and OTLP collector endpoint
+otel = OtelSetup(name="my_service", otlp_collector_endpoint="http://localhost:4317")
+
+# Initialize logging
+logger = otel.get_logger()
+logger.info("This is a test log!")
+
+# You can provide your own formatter to the logger
+import logging
+formatter = logging.Formatter('%(asctime)s | %(name)s | %(levelname)s | %(message)s')
+logger = otel.get_logger(formatter)
+
+
+# Initialize tracing
+tracer = otel.init_tracing()
+with tracer.start_as_current_span("test_span"):
+    logger.info("Tracing this operation!")
+
+## or add tracing via decorator
+@tracer.start_as_current_span("Tracing this operation!")
+
+# Initialize metrics
+meter = otel.init_metrics()
+counter = meter.create_counter("my_counter")
+counter.add(1)
+
+# Enable auto-instrumentation for requests
+request_inst = otel.get_request_instrumentor()
+request_inst().instrument()
+
+# Make a request (will be traced automatically)
+import requests
+response = requests.get("https://example.com")
+print(response.status_code)
+
 ```
-Pass the endpoint of your otlp collector to the constructor. You can then get a tracer, meter or logger.
 
-```python
-import opentelemetry_helper
+## Configuration
+Ensure you have an OpenTelemetry collector running, such as:  
+```bash
+docker run --rm -p 4317:4317 -p 4318:4318 \
+  otel/opentelemetry-collector-contrib:latest
+```
 
-otlp_endpoint = os.getenv("OTLP_COLLECTOR_ENDPOINT")
+## License
+This project is licensed under the MIT License.
 
-# Initialize OpenTelemetry helper
-ot_ = opentelemetry_helper(name="my.identifier", otlp_collector_endpoint=otlp_endpoint)
-
-# Set up logging, metrics, and tracing
-logger = ot_.get_logger()
-meter = ot_.init_metrics()
-tracer = ot_.init_tracing()
-
-# start building metrics
-email_counter = meter.create_counter("email_count", description="Counts the number of emails sent")
-
-...
-email_counter.add(1)
-
-# or traces
-@tracer.start_as_current_span("send email")
-
-````
 
