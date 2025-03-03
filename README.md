@@ -26,6 +26,9 @@ otel = OtelSetup(name="my_service", otlp_collector_endpoint="http://localhost:43
 logger = otel.get_logger()
 logger.info("This is a test log!")
 
+## If needed, you can pass a scope_name to create multiple logger
+acme_logger = otel.get_logger("acme")
+
 # You can provide your own formatter to the logger
 import logging
 formatter = logging.Formatter('%(asctime)s | %(name)s | %(levelname)s | %(message)s')

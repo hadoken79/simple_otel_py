@@ -47,34 +47,39 @@ class OtelSetup:
 
         return meter_provider.get_meter(self.name)
 
-    def get_logger(self, formatter: logging.Formatter = None):
+    def get_logger(self, scope_name: str = '', formatter: logging.Formatter = None):
         from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter
         from opentelemetry._logs import set_logger_provider
         from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
         from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
 
         # Standard logger setup
-        logger = logging.getLogger(self.name)
+        if not scope_name:
+            scope_name = self.name
+            
+        logger = logging.getLogger(scope_name)
         logger.setLevel(logging.INFO)
 
-        # Console handler
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.DEBUG)
+        # Console handler, prevent adding multiple instances if same scope_name is used.
+        if not any(isinstance(h, logging.StreamHandler) for h in logger.handlers):
+            console_handler = logging.StreamHandler()
+            console_handler.setLevel(logging.DEBUG)
         
-        if formatter is None:
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            if formatter is None:
+                formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             
-        console_handler.setFormatter(formatter)
-        logger.addHandler(console_handler)
+            console_handler.setFormatter(formatter)
+            logger.addHandler(console_handler)
 
         # OTLP handler
-        logger_provider = LoggerProvider(resource=self.resource)
-        set_logger_provider(logger_provider)
-        log_exporter = OTLPLogExporter(endpoint=self.otlp_collector_endpoint, insecure=True)
-        logger_provider.add_log_record_processor(BatchLogRecordProcessor(log_exporter))
+        if not any(isinstance(h, LoggingHandler) for h in logger.handlers):
+            logger_provider = LoggerProvider(resource=self.resource)
+            set_logger_provider(logger_provider)
+            log_exporter = OTLPLogExporter(endpoint=self.otlp_collector_endpoint, insecure=True)
+            logger_provider.add_log_record_processor(BatchLogRecordProcessor(log_exporter))
 
-        otlp_handler = LoggingHandler(level=logging.INFO, logger_provider=logger_provider)
-        logger.addHandler(otlp_handler)
+            otlp_handler = LoggingHandler(level=logging.INFO, logger_provider=logger_provider)
+            logger.addHandler(otlp_handler)
 
         return logger
 
